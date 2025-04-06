@@ -1,0 +1,19 @@
+server:
+  servlet:
+    context-path: /devterial
+
+spring:
+  application:
+    name: devterial
+  datasource:
+    url: jdbc:sqlite:src/main/resources/database/mydatabase.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    show-sql: true
+    open-in-view: false 
+
+value:
+  secret-key: xin chao
