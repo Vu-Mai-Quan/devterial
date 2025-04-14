@@ -58,3 +58,9 @@ local.properties
 # Uncomment this line if you wish to ignore the project description file.
 # Typically, this file would be tracked if it contains build/dependency configurations:
 #.project
+/.project
+/target/classes/database/mydatabase.db
+/target/classes/application.yaml
+/target/classes/META-INF/MANIFEST.MF
+/target/classes/META-INF/maven/com.example/devterial/pom.properties
+/target/classes/META-INF/maven/com.example/devterial/pom.xml
