@@ -1,22 +1,21 @@
 package com.example.identity.services;
 
-import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.function.Function;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
 import com.example.identity.ultis.JwtConfig;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
+import java.util.function.Function;
+
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -26,14 +25,14 @@ public class JwtService {
 	JwtConfig config;
 	@NonFinal
 	Key key;
-	
+
 
 	@Autowired
 	public void setKey(JwtConfig config) {
 		this.config = config;
 		this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encode(config.getSecretKey().getBytes()));
 	}
-	
+
 	// Lấy username từ token
 
 		public String extractUserName(String token) {

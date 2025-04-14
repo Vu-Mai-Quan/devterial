@@ -1,9 +1,6 @@
 package com.example.identity.exeptionsglobal;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
+import jakarta.persistence.NoResultException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
@@ -11,7 +8,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import jakarta.persistence.NoResultException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdviceException {
@@ -27,7 +26,7 @@ public class ControllerAdviceException {
 			return ResponseEntity.badRequest().body(
 					new ErrorResponse<List<Map<String, String>>>(HttpStatus.BAD_REQUEST, mapError, LocalDateTime.now()));
 		}
-	
+
 	@ExceptionHandler(value = NoResultException.class)
 	public ResponseEntity<?> notFoundException(NoResultException run) {
 		return ResponseEntity.badRequest()
@@ -50,10 +49,10 @@ public class ControllerAdviceException {
 				}
 			}
 		}
-		
+
 		return ResponseEntity.badRequest()
 				.body(new ErrorResponse<String>(HttpStatus.BAD_REQUEST, message, LocalDateTime.now()));
 	}
 
-	
+
 }

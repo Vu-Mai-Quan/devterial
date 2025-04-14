@@ -19,5 +19,5 @@ public class ConfigBean {
 		return end;
 	}
 
-	
+
 }

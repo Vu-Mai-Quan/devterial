@@ -1,18 +1,13 @@
 package com.example.identity.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import com.example.identity.enumvalue.RoleEnum;
+
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
-
-import com.example.identity.enumvalue.RoleEnum;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor

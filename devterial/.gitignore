@@ -64,3 +64,5 @@ local.properties
 /target/classes/META-INF/MANIFEST.MF
 /target/classes/META-INF/maven/com.example/devterial/pom.properties
 /target/classes/META-INF/maven/com.example/devterial/pom.xml
+/.classpath
+/target/

@@ -1,20 +1,14 @@
 package com.example.identity.dto.request;
 
-import java.time.LocalDate;
-import java.util.Set;
-
 import com.example.identity.enumvalue.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
+import java.util.Set;
 
 
 
@@ -25,8 +19,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Setter
 public class UserRequest {
-		
-	
+
+
 	@Email(message = "Vui lòng nhập đúng định dạng email")
 	String username;
 	@Size(min = 6, max = 10,message = "Mật khẩu từ 6-10 kí tự")
@@ -37,8 +31,8 @@ public class UserRequest {
 	String lastName;
 	@JsonProperty(value = "date_of_birth")
 	LocalDate dob;
-	
+
 	Set<RoleEnum> role;
-	
+
 }
 

@@ -1,5 +1,6 @@
 package com.example.identity.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,7 +13,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.identity.ultis.JwtFilter;
 
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +30,6 @@ public class AuthConfig {
 		.httpBasic(AbstractHttpConfigurer::disable)
 		.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth.requestMatchers(HttpMethod.POST, postPublic).permitAll()
-						
 						.requestMatchers(HttpMethod.PUT, "/user/**").permitAll()
 						.requestMatchers(HttpMethod.GET, getPrivave).hasAnyRole("CUSTOMER", "ADMIN")
 						.requestMatchers(HttpMethod.GET, getPublic).permitAll().anyRequest().authenticated())

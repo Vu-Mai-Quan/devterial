@@ -1,5 +1,8 @@
 package com.example.identity.config;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,18 +12,13 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.example.identity.repositories.JpaRepositoriyUser;
-
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-	
+
 	JpaRepositoriyUser jpaRepositoriyUser;
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Bean
@@ -30,7 +28,7 @@ public class WebSecurityConfig {
 		return detailsService;
 	}
 
-	
+
 	@Bean
 	AuthenticationProvider authenticationProvider(UserDetailsService  detailsService) {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();

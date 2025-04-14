@@ -1,14 +1,15 @@
 package com.example.identity.ultis;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.example.identity.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.example.identity.model.User;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+
 
 @Component
 public class AuthorityUltis {
@@ -40,6 +41,6 @@ public class AuthorityUltis {
 	public boolean isCurrentNameLogin(String name) {
 		return name.equals(getCurrentNameUser());
 	}
-	
-	
+
+
 }

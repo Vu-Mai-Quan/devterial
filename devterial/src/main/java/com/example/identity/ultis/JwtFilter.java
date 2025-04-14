@@ -1,27 +1,8 @@
 package com.example.identity.ultis;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
-import org.modelmapper.internal.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.example.identity.model.User;
 import com.example.identity.services.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -35,6 +16,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.internal.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 @Component
 @RequiredArgsConstructor
@@ -44,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	UserDetailsService userDetailsService;
 	static Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 	JwtService jwtService;
-	ObjectMapper mapper;	
+	ObjectMapper mapper;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -69,9 +67,8 @@ public class JwtFilter extends OncePerRequestFilter {
 							.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 					filterChain.doFilter(request, response);
-				} 
+				}
 			}
-			;
 		} catch (ServletException | IOException e) {
 			sendErrorResponser(response, request, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED,
 					"Network Error!");
@@ -86,8 +83,8 @@ public class JwtFilter extends OncePerRequestFilter {
 					e.getMessage());
 		}
 
-	} 
-	
+	}
+
 
 //	private boolean isByPassToken(HttpServletRequest request) {
 //		final AntPathMatcher antPathMatcher = new AntPathMatcher();

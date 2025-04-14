@@ -1,8 +1,5 @@
 package com.example.identity.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -12,19 +9,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serializable;
+import java.util.Date;
+
 @MappedSuperclass
 @NoArgsConstructor
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class BaseEntity implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "created_at", nullable = false)
+	@Column(name = "created_at")
 	Date createdAt;
-	@Column(name = "updated_at", nullable = false)
+	@Column(name = "updated_at")
 	Date updatedAt;
 
 	@PrePersist()
