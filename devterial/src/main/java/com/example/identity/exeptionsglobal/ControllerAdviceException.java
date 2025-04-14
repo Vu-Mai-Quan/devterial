@@ -46,11 +46,11 @@ public class ControllerAdviceException {
 				int idx = rootMsg.lastIndexOf('.');
 				if (idx != -1) {
 					String field = rootMsg.substring(idx + 1);
-					message = String.format("Trường '%s' đã tồn tại. Vui lòng chọn giá trị khác.", field);
+					message = String.format("Dữ liệu '%s' đã tồn tại. Vui lòng chọn giá trị khác.", field);
 				}
 			}
 		}
-
+		
 		return ResponseEntity.badRequest()
 				.body(new ErrorResponse<String>(HttpStatus.BAD_REQUEST, message, LocalDateTime.now()));
 	}

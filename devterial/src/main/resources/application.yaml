@@ -15,5 +15,6 @@ spring:
     show-sql: true
     open-in-view: false 
 
-value:
-  secret-key: xin chao
+auth:
+  secret-key: HtmdKi89LbUhTYKclLiTMk2002HlKjbycVtlPhfjs796/yHkmlhtJys@gaclyko2
+  exp: 3600000
