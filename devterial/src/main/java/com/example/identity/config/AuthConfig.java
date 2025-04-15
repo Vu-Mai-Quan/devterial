@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,14 +15,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.example.identity.ultis.JwtFilter;
 
 
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class AuthConfig {
-
-	private String[] postPublic = { "/auth/login", "/user/register" }, getPublic = {"/product/", "/product/**" },
+	/**
+	 *  public endpoints
+	 */
+ private String[] postPublic = { "/auth/login", "/user/register" }, getPublic = {"/product/", "/product/**" },
 			getPrivave = { "/user", "/user/get-user/**" };
 
+	/** bean về jwt service */
 	private final JwtFilter config;
 
 	@Bean

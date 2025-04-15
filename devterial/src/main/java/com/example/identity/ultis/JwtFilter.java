@@ -57,8 +57,12 @@ public class JwtFilter extends OncePerRequestFilter {
 			}
 			jwt = header.substring(7);
 			username = jwtService.extractUserName(jwt);
-
-			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+			if(!jwtService.isInssuValid(jwt)){
+				sendErrorResponser(response, request, "Token không rõ nguồn gốc", HttpServletResponse.SC_UNAUTHORIZED,
+						"Xác thực không thành công");
+				return;
+            }
+			 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				User userDetails = (User) userDetailsService.loadUserByUsername(username);
 				if (jwtService.validateToken(jwt, userDetails)) {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

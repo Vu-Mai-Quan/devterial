@@ -12,6 +12,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.identity.dto.request.LoginRequest;
@@ -68,7 +70,7 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
 	}
 
 	@Override
-
+	@PostAuthorize("returnObject.username == authentication.name")
 	public UserResponse getOne(UUID id) {
 		User user = repo.findById(id).orElseThrow(() -> new NoResultException("Không có user với id: " + id));
 		return uMap.userToUserResponse(user);
@@ -96,7 +98,7 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
 		if (isAdmin) {
 			// Admin được cập nhật tất cả, bao gồm username
 			updatedUser.setId(id);
-			updatedUser.setPassword(endCode.encode(updatedUser.getPassword()));
+			updatedUser.setPassword(endCode.encode(rq.getPassword()));
 			repo.save(updatedUser);
 			return uMap.userToUserResponse(updatedUser);
 		}
@@ -141,9 +143,8 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
 
 	private String createToken(UUID id, String username, Object... object) {
 		Date date = new Date(System.currentTimeMillis() + jwtConfig.getIssuedAt());
-		String jwt = Jwts.builder().setSubject(username).claim("role", object).claim("id", id)
-				.signWith(key, SignatureAlgorithm.HS512).setIssuer("vumaiquan.com").setExpiration(date).compact();
-		return jwt;
+        return Jwts.builder().setSubject(username).claim("role", object).claim("id", id)
+                .signWith(key, SignatureAlgorithm.HS512).setIssuer("vumaiquan.com").setExpiration(date).compact();
 	}
 
 	@Override

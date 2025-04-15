@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.identity.repositories.JpaRepositoriyUser;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -20,7 +21,7 @@ import com.example.identity.repositories.JpaRepositoriyUser;
 public class WebSecurityConfig {
 
 	JpaRepositoriyUser jpaRepositoriyUser;
-	BCryptPasswordEncoder bCryptPasswordEncoder;
+	PasswordEncoder bCryptPasswordEncoder;
 	@Bean
 	UserDetailsService detailsService() {
 		UserDetailsService detailsService = (username) -> jpaRepositoriyUser.findByUsername(username)
