@@ -1,5 +1,6 @@
 package com.example.identity.dto.response;
 
+import com.example.identity.model.Permission;
 import com.example.identity.model.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,8 +12,8 @@ import java.util.Set;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionRp {
+public class RoleRp {
     String name;
     String descriptions;
-    Set<Role> roles;
+    Set<Permission> permissions;
 }

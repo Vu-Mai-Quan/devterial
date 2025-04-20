@@ -10,5 +10,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PermissionRq {
     String name;
-    String description;
+    String descriptions;
 }

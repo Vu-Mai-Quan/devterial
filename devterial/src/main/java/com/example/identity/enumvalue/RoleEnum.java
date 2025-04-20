@@ -1,11 +1,15 @@
 package com.example.identity.enumvalue;
 
 public enum RoleEnum {
-	ADMIN("ADMIN"), CLIENT("Khách hàng"), CUSTOMER("Nhân viên");
+	ADMIN("ADMIN"), CLIENT("Khách hàng"), CUSTOMER("Nhân viên"), USER("Người dùng"),MANAGER("Người quản lí");
 
 	RoleEnum(String string) {
-		// TODO Auto-generated constructor stub
+		this.message = string;
 	}
 
-	String name;
+	String message;
+
+	public String getMessage() {
+		return message;
+	}
 }

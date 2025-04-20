@@ -1,9 +1,8 @@
 package com.example.identity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.repository.EntityGraph;
 
@@ -13,14 +12,19 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "permistion")
+@Table(name = "permissions")
 @NamedEntityGraph(name = "Permission.roles",attributeNodes = @NamedAttributeNode("roles"))
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Permission {
   @Id
   String name;
-  String description;
+  @JsonIgnore
+  String descriptions;
 
-  @ManyToMany(mappedBy = "permistions")
+  @ManyToMany(mappedBy = "permissions")
+  @JsonIgnore
   Set<Role> roles;
 }

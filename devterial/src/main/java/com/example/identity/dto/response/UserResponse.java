@@ -1,5 +1,6 @@
 package com.example.identity.dto.response;
 
+import com.example.identity.model.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,5 +23,5 @@ public class UserResponse {
 	@JsonProperty(value = "last_name")
 	String lastName;
 	LocalDate dob;
-	Set<RoleEnum> role;
+	Set<Role> role;
 }

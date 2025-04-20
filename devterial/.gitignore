@@ -67,3 +67,4 @@ local.properties
 /.classpath
 /target/
 /src/main/resources/database/
+/.idea/

@@ -3,6 +3,8 @@
  */
 package com.example.identity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +16,6 @@ import java.time.LocalDateTime;
 
 /**
  * * @author admin
- *
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,27 +24,28 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "black_list_token")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class BlackListToken  {
+public class BlackListToken {
 
-	@Id
-	@Column(name = "token", unique = true, nullable = false)
-	String token;
+    @Id
+    @Column(name = "token", unique = true, nullable = false, columnDefinition = "TEXT")
+    String token;
+    @Column(name = "expired_date", nullable = false)
+    @JsonProperty("expired_date")
+    LocalDateTime expiredDate;
 
-	@Column(name = "expired_date", nullable = false)
-	LocalDateTime expiredDate;
+    @Column(name = "create_date", nullable = false)
+    @JsonProperty("create_at")
+    LocalDateTime createAt;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    User user;
 
-	@Column(name = "create_date", nullable = false)
-	@Setter(value = lombok.AccessLevel.NONE)
-	private LocalDateTime createAt;
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-	User user;
-
-	@PrePersist
-	public void prePersist() {
-		if (this.createAt != null) {
-			return;
-		}
-		this.createAt = LocalDateTime.now();
-	}
+    @PrePersist
+    public void prePersist() {
+        if (this.createAt != null) {
+            return;
+        }
+        this.createAt = LocalDateTime.now();
+    }
 }

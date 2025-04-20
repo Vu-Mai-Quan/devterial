@@ -3,8 +3,10 @@ package com.example.identity.services.imlp;
 import com.example.identity.dto.request.PermissionRq;
 import com.example.identity.dto.response.PermissionRp;
 import com.example.identity.mapper.PermissionMapper;
+import com.example.identity.model.Role;
 import com.example.identity.repositories.PermissionRepository;
 import com.example.identity.services.PermissionService;
+import jakarta.persistence.NoResultException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -35,7 +37,13 @@ public class PermissionImlp implements PermissionService {
     }
 
     @Override
-    public PermissionRp getOne(UUID id) {
+    public PermissionRp getOne(String id) {
+        return permissionRepository.findById(id).map(mapper::toPermissionRp).orElseThrow(() -> new NoResultException("Không có permission này"));
+    }
+
+    @Override
+    public PermissionRp update(PermissionRq rq, Role role) {
+
         return null;
     }
 
@@ -43,6 +51,7 @@ public class PermissionImlp implements PermissionService {
     public PermissionRp update(UUID id, PermissionRq rq) throws AuthenticationException {
         return null;
     }
+
 
     public void delete(String name) {
         permissionRepository.deleteById(name);

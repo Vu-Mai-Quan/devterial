@@ -1,5 +1,10 @@
 package com.example.identity.exeptionsglobal;
 
+import com.example.identity.dto.response.GlobalResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.persistence.NoResultException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +28,10 @@ public class ControllerAdviceException {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse<List<Map<String, String>>>> validateException(MethodArgumentNotValidException ex) {
         List<Map<String, String>> mapError = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> Map.of(error.getField(), error.getDefaultMessage())).toList();
+                .map(error -> {
+                    assert error.getDefaultMessage() != null;
+                    return Map.of(error.getField(), error.getDefaultMessage());
+                }).toList();
         return ResponseEntity.badRequest().body(
                 new ErrorResponse<List<Map<String, String>>>(HttpStatus.BAD_REQUEST, mapError, LocalDateTime.now()));
     }
@@ -62,4 +70,24 @@ public class ControllerAdviceException {
                 .body(new ErrorResponse(HttpStatus.FORBIDDEN, "Bạn không đủ quyên truy cập: " + exception.getMessage(), LocalDateTime.now()));
     }
 
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<GlobalResponse<String>> handleExpiredJwtException(ExpiredJwtException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GlobalResponse<>(HttpStatus.BAD_REQUEST.value(), "Token đã hết hạn", ex.getMessage()));
+    }
+
+    @ExceptionHandler({MalformedJwtException.class, UnsupportedJwtException.class})
+    public ResponseEntity<GlobalResponse<String>> handleMalformedOrUnsupportedJwtException(RuntimeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GlobalResponse<>(HttpStatus.BAD_REQUEST.value(), "Token không đúng định dạng", ex.getMessage()));
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<GlobalResponse<String>> handleSignatureException(SignatureException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new GlobalResponse<>(HttpStatus.BAD_REQUEST.value(), "Token không hợp lệ", ex.getMessage()));
+    }
 }

@@ -1,7 +1,9 @@
 package com.example.identity.services;
 
+import com.example.identity.dto.response.GlobalResponse;
+
 import java.util.Date;
 
 public interface BlackListTokenService {
-   void createBlackListToken(String token, Date expiredDate);
+   GlobalResponse<?> createBlackListToken(String token);
 }
