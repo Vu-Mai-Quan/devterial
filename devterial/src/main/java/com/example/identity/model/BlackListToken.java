@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -24,10 +26,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "black_list_token")
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class BlackListToken {
+public class BlackListToken implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "token", unique = true, nullable = false, columnDefinition = "TEXT")
+    @Column(name = "token", unique = true, nullable = false, columnDefinition = "varchar(512)")
     String token;
     @Column(name = "expired_date", nullable = false)
     @JsonProperty("expired_date")

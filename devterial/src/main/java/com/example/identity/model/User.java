@@ -3,8 +3,6 @@ package com.example.identity.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,10 +37,6 @@ public class User extends BaseEntity implements UserDetails {
     String lastName;
 
     LocalDate dob;
-    //	@ElementCollection(fetch = FetchType.EAGER)
-//	@CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-//	@Enumerated(EnumType.STRING)
-//	@Column(name = "role", length = 13)
     @ManyToMany()
     @JoinTable(name = "user_with_role",
             joinColumns = @JoinColumn(name = "users_id"),

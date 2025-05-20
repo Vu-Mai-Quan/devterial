@@ -57,5 +57,5 @@ public class PermissionImlp implements PermissionService {
         permissionRepository.deleteById(name);
     }
 
-    ;
+
 }

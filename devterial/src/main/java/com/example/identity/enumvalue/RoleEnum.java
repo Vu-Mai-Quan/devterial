@@ -1,15 +1,13 @@
 package com.example.identity.enumvalue;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+@AllArgsConstructor
+@Getter
 public enum RoleEnum {
-	ADMIN("ADMIN"), CLIENT("Khách hàng"), CUSTOMER("Nhân viên"), USER("Người dùng"),MANAGER("Người quản lí");
+    ADMIN("ADMIN"), CLIENT("Khách hàng"), CUSTOMER("Nhân viên"), USER("Người dùng"), MANAGER("Người quản lí");
 
-	RoleEnum(String string) {
-		this.message = string;
-	}
+    final String message;
 
-	String message;
 
-	public String getMessage() {
-		return message;
-	}
 }

@@ -16,8 +16,7 @@ public class ConfigBean {
 
 	@Bean
 	PasswordEncoder endcoder() {
-		PasswordEncoder end = new BCryptPasswordEncoder(10);
-		return end;
+        return new BCryptPasswordEncoder(10);
 	}
 
 

@@ -7,8 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DevterialApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DevterialApplication.class, args);
-//		System.getProperties().forEach((k, v) -> System.out.println(k + ": " + v));
+		SpringApplication.run(DevterialApplication.class, args);		
 	}
 
 }

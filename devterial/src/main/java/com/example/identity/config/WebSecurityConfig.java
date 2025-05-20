@@ -1,5 +1,6 @@
 package com.example.identity.config;
 
+import com.example.identity.repositories.JpaRepositoriyUser;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -11,8 +12,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.example.identity.repositories.JpaRepositoriyUser;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -24,9 +23,8 @@ public class WebSecurityConfig {
 	PasswordEncoder bCryptPasswordEncoder;
 	@Bean
 	UserDetailsService detailsService() {
-		UserDetailsService detailsService = (username) -> jpaRepositoriyUser.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
-		return detailsService;
+        return (username) -> jpaRepositoriyUser.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
 	}
 
 

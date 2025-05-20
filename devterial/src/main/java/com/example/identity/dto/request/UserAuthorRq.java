@@ -1,13 +1,11 @@
-package com.example.identity.dto;
+package com.example.identity.dto.request;
 
 
 import com.example.identity.model.Permission;
 import com.example.identity.model.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,11 +14,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class UserAuthorRq {
     UUID id;
     String username;
     Set<Role> role;
     Set<Permission> permissions;
+
+
 
 }

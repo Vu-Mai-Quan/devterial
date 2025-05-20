@@ -25,11 +25,12 @@ public class AuthConfig {
 	/**
 	 *  public endpoints
 	 */
- private final String[] postPublic = { "/auth/public/**", "/user/register" }, getPublic = {"/product/", "/product/**" },
+ private final String[] postPublic = { "/auth/public/**", "/user/public/register" }, getPublic = {"/product/", "/product/**" },
 			getPrivave = { "/user", "/user/get-user/**" }, putPrivate = {"/auth/role/**"};
 
 	/** bean về jwt service */
 	private final JwtFilter config;
+
 
 	@Bean
 	SecurityFilterChain filterChain(@NonNull HttpSecurity rq) throws Exception {

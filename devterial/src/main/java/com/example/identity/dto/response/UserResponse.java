@@ -1,10 +1,10 @@
 package com.example.identity.dto.response;
 
 import com.example.identity.model.Role;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import com.example.identity.enumvalue.RoleEnum;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,6 +15,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UserResponse {
 	UUID id;
 	String username;

@@ -1,19 +1,13 @@
 package com.example.identity.services.imlp;
 
-import com.example.identity.dto.UserAuthorRq;
-import com.example.identity.dto.request.LoginRequest;
 import com.example.identity.dto.request.UserRequest;
-import com.example.identity.dto.response.LoginResponse;
 import com.example.identity.dto.response.UserResponse;
+import com.example.identity.enumvalue.RoleEnum;
 import com.example.identity.mapper.UserMapper;
-import com.example.identity.model.Permission;
 import com.example.identity.model.Role;
 import com.example.identity.model.User;
 import com.example.identity.repositories.JpaRepositoriyUser;
-import com.example.identity.repositories.RoleRepositories;
-import com.example.identity.services.AuthService;
-import com.example.identity.services.BaseService;
-import com.example.identity.services.JwtService;
+import com.example.identity.services.UserService;
 import com.example.identity.ultis.AuthorityUltis;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.NoResultException;
@@ -22,27 +16,26 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.naming.AuthenticationException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Slf4j
-public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthService {
+public class UserImlp implements UserService {
 
     JpaRepositoriyUser repo;
     UserMapper uMap;
     PasswordEncoder endCode;
     AuthorityUltis authorityUltis;
-    JwtService jwtService;
-    RoleRepositories roleRepositories;
 
 
     @Override
@@ -50,13 +43,14 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
     public UserResponse save(UserRequest data) {
         User user = uMap.userRequestToUser(data);
         user.setPassword(endCode.encode(data.getPassword()));
+        user.setRole(Set.of(Role.builder().name(RoleEnum.USER.name()).build(), Role.builder().name(RoleEnum.CLIENT.name()).build()));
         repo.save(user);
         return uMap.userToUserResponse(user);
     }
 
     @Override
-    public List<UserResponse> getAll() {
-        return repo.findAll().stream().map(uMap::userToUserResponse).toList();
+    public Page<UserResponse> getAll(Pageable pageable) {
+        return repo.findAll(pageable).map(uMap::userToUserResponse);
     }
 
     @Override
@@ -69,11 +63,11 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
     @Override
     @Transactional
     public UserResponse update(UUID id, UserRequest rq) throws AuthenticationException {
+
         User targetUser = repo.findById(id)
                 .orElseThrow(() -> new EntityExistsException("Không tồn tại user với id: " + id));
 
         User updatedUser = uMap.userRequestToUser(rq);
-        log.info(updatedUser.getPassword());
         Set<String> currentRoles = authorityUltis.getAllRoleTagertUser(null);
         Set<String> targetRoles = authorityUltis.getAllRoleTagertUser(targetUser);
 
@@ -93,17 +87,16 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
             return uMap.userToUserResponse(updatedUser);
         }
 
-        if (isCustomer) {
-            // CUSTOMER chỉ được cập nhật người có quyền CLIENT
-            if (targetIsClient && !targetIsAdmin && !targetIsCustomer) {
-                updatedUser.setId(id);
-                updatedUser.setUsername(targetUser.getUsername());
-                updatedUser.setPassword(endCode.encode(rq.getPassword()));// Không cho sửa username
-                updatedUser.setRole(targetUser.getRole());
-                repo.save(updatedUser);
-                return uMap.userToUserResponse(updatedUser);
-            }
-        }
+//        if (isCustomer) {
+//            // CUSTOMER chỉ được cập nhật người có quyền CLIENT
+//            if (targetIsClient && !targetIsAdmin && !targetIsCustomer) {
+//                rq.setId(id);
+//        rq.setUsername(targetUser.getUsername());
+//        rq.setPassword(endCode.encode(rq.getPassword()));// Không cho sửa username
+//        rq.setRole(targetUser.getRole());
+//        repo.save(rq);
+//            }
+//        }
 
         if (isSelf && (currentRoles.contains("ROLE_CLIENT"))) {
             updatedUser.setId(id);
@@ -118,32 +111,21 @@ public class UserImlp implements BaseService<UserRequest, UserResponse>, AuthSer
 
     }
 
-    @Override
-    public LoginResponse login(LoginRequest rq) {
-        Optional<User> user = repo.findByUsername(rq.getUsername());
-        if (user.isPresent() && endCode.matches(rq.getPassword(), user.get().getPassword())) {
-            Set<Permission> per = getAllPermissionByIdRole(user.get().getRole());
-            return LoginResponse.builder()
-                    .token(jwtService.createToken(new UserAuthorRq(user.get().getId(), user.get().getUsername(), user.get().getRole(), per)))
-                    .build();
-        } else {
-            throw new NoResultException("Thông tin tài khoản hoặc mật khẩu không chính xác");
-        }
-
-    }
-
-    private Set<Permission> getAllPermissionByIdRole(Set<Role> roles) {
-        if (CollectionUtils.isEmpty(roles)) {
-            return Collections.emptySet();
-        }
-        Set<String> id = roles.stream().map(Role::getName).collect(Collectors.toSet());
-        return roleRepositories.findAllPermissionByIdRole(id).stream().flatMap(role -> role.getPermissions().stream()).collect(Collectors.toSet());
+    private User updateWithUser(UserRequest rq) {
+        return null;
     }
 
 
-    @Override
-    public boolean isAuthencate(String token) {
-        return false;
+
+    //    private User updateWithCustomer(User rq){
+//
+//        return rq;
+//    };
+    private User updateWithAdmin(UserRequest rq) {
+        return null;
     }
+
+
+
 
 }

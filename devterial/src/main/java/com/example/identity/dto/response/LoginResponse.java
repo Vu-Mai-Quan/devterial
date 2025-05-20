@@ -1,5 +1,6 @@
 package com.example.identity.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,5 +10,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @Getter
 public class LoginResponse {
-	String token;
+    String token;
+    @JsonProperty(value = "refresh_token")
+    String refreshToken;
+    UserResponse user;
 }

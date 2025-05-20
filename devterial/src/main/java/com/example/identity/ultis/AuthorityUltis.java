@@ -16,26 +16,21 @@ public class AuthorityUltis {
 
 	public String getCurrentNameUser() {
 		Authentication auth = getAuthentication();
-		String currentUsername = auth.getName();
-		return currentUsername;
+        return auth.getName();
 	}
 
 	public Set<String> getAllRoleTagertUser(Object obj) {
 		if (!(obj instanceof User)) {
-			Set<String> currentRoles = getAuthentication().getAuthorities().stream()
-					.map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
-			return currentRoles;
-		} else if (obj instanceof User) {
-			Set<String> currentRoles = ((User) obj).getAuthorities().stream().map(GrantedAuthority::getAuthority)
-					.collect(Collectors.toSet());
-			return currentRoles;
+            return getAuthentication().getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
 		}
-		return null;
+        return ((User) obj).getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
 	}
 
 	private Authentication getAuthentication() {
-		var auth = SecurityContextHolder.getContext().getAuthentication();
-		return auth;
+        return SecurityContextHolder.getContext().getAuthentication();
 	}
 
 	public boolean isCurrentNameLogin(String name) {

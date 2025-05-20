@@ -4,7 +4,6 @@ import com.example.identity.dto.request.RoleRq;
 import com.example.identity.dto.response.RoleRp;
 import com.example.identity.enumvalue.RoleEnum;
 import com.example.identity.model.Role;
-import com.example.identity.repositories.PermissionRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

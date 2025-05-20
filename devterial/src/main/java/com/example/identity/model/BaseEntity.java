@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ public abstract class BaseEntity implements Serializable {
 	/**
 	 *
 	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "created_at")

@@ -1,7 +1,7 @@
 package com.example.identity.repositories;
 
-import com.example.identity.model.Permission;
 import com.example.identity.model.Role;
+import io.micrometer.common.lang.NonNull;
 import jakarta.websocket.server.PathParam;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,13 +19,17 @@ public interface RoleRepositories extends JpaRepository<Role, String> {
      */
     @Override
     @EntityGraph(attributePaths = {"permissions"})
+    @NonNull
     List<Role> findAll();
 
     @Override
     @EntityGraph(attributePaths = {"permissions"})
-    Optional<Role> findById(String s);
+    @NonNull
+    Optional<Role> findById(@NonNull String s);
+
     @Query("SELECT r FROM Role r WHERE r.name IN :id")
     Set<Role> findAllById(@PathParam("id") Set<String> id);
+
     @EntityGraph(attributePaths = {"permissions"})
     @Query("SELECT r FROM Role r WHERE r.name IN :id")
     Set<Role> findAllPermissionByIdRole(@PathParam("id") Set<String> id);

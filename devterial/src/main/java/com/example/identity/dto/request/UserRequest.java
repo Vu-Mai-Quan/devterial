@@ -1,6 +1,5 @@
 package com.example.identity.dto.request;
 
-import com.example.identity.enumvalue.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -8,7 +7,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 
 
@@ -31,8 +29,6 @@ public class UserRequest {
 	String lastName;
 	@JsonProperty(value = "date_of_birth")
 	LocalDate dob;
-
-	Set<RoleEnum> role;
 
 }
 

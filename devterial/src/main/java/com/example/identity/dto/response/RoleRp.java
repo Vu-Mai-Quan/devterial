@@ -1,7 +1,6 @@
 package com.example.identity.dto.response;
 
 import com.example.identity.model.Permission;
-import com.example.identity.model.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

@@ -4,8 +4,6 @@ import com.example.identity.dto.request.PermissionRq;
 import com.example.identity.dto.response.PermissionRp;
 import com.example.identity.model.Role;
 
-import java.util.UUID;
-
 public interface PermissionService extends BaseService<PermissionRq, PermissionRp>{
 
     void delete(String name);

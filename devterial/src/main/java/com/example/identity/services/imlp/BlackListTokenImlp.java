@@ -1,28 +1,24 @@
 package com.example.identity.services.imlp;
 
-import com.example.identity.dto.response.GlobalResponse;
 import com.example.identity.model.BlackListToken;
+import com.example.identity.model.User;
 import com.example.identity.repositories.BlackListRepositories;
 import com.example.identity.repositories.JpaRepositoriyUser;
 import com.example.identity.services.BlackListTokenService;
 import com.example.identity.services.JwtService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
+import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.NoResultException;
-
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,26 +34,41 @@ public class BlackListTokenImlp implements BlackListTokenService {
      * Tạo ra một token mới
      */
     @Override
-    @Transactional
-    public GlobalResponse<?> createBlackListToken(String token) {
+    public String createBlackListToken(String token) {
         /*Kiểm tra coi token hợp lệ không*/
-        if (!jwtService.isInssuValid(token)) {
-            return new GlobalResponse<String>(HttpStatus.BAD_REQUEST.value(), "Token không hợp lệ", null);
-        }
-        Optional<BlackListToken> blackListToken = blackListRepositories.findByToken(token);
-        if (blackListToken.isPresent()) {
-            throw new EntityExistsException("Token đã tồn tại trong danh sách đen");
-        } else {
-            var clams = jwtService.decodeToken(token);
-            var user = jpaRepositoriyUser.findById(UUID.fromString( clams.get("id", String.class))).orElseThrow(() -> new NoResultException(String.format("Không có user với id: %s", clams.getId())));
-            Date date = clams.getExpiration();
-            BlackListToken blackList = new BlackListToken();
-            blackList.setUser(user);
-            blackList.setToken(token);
-            blackList.setExpiredDate(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-            return new GlobalResponse<>(HttpStatus.OK.value(), "Token đã thêm vào blacklisted", blackListRepositories.save(blackList));
+        try {
+            if (!jwtService.isInssuerValid(token)) {
+                return "Token không hợp lệ";
+            }
+            if (blackListRepositories.existsById(token)) {
+                throw new EntityExistsException("Token đã tồn tại trong danh sách đen");
+            } else {
+                saveBlackListToken(token);
+                return "Token đã thêm vào blacklisted";
+            }
+
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("Token đã hết hạn không cần khóa", e);
         }
 
+
+    }
+
+    @Transactional
+    private void saveBlackListToken(String token) {
+
+        Claims clams = jwtService.decodeToken(token);
+        var idUser = UUID.fromString(clams.get("id", String.class));
+        boolean bool = jpaRepositoriyUser.existsById(idUser);
+        if (bool) {
+            Date date = clams.getExpiration();
+            BlackListToken blackList = new BlackListToken();
+            blackList.setUser(User.builder().id(idUser).build());
+            blackList.setToken(token);
+            blackList.setExpiredDate(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+            blackListRepositories.save(blackList);
+        }
+        throw new NoResultException(String.format("Không có user với id: %s", idUser));
     }
 
 
