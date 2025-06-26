@@ -8,8 +8,10 @@ import java.util.UUID;
 
 public interface BlackListRepositories extends JpaRepository<BlackListToken, String> {
 
-	Optional<BlackListToken> findByToken(String token);
-	Optional<BlackListToken> findByUserId(UUID userId);
-	Optional<BlackListToken> findByUserIdAndToken(UUID userId, String token);
+    Optional<BlackListToken> findByToken(String token);
+
+    Optional<BlackListToken> findByUserId(UUID userId);
+
+    Optional<BlackListToken> findByUserIdAndToken(UUID userId, String token);
 
 }
