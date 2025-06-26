@@ -19,8 +19,9 @@ import java.util.Set;
 @Table(name = "role")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@NamedQuery(name="Role.selectIn", query = "select r FROM Role r WHERE r.name IN :id")
 public class Role {
-    @Id
+    @Id 
     String name;
     @JsonIgnore
     String descriptions;
@@ -30,7 +31,7 @@ public class Role {
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     @JsonIgnore
     Set<Permission> permissions;
-    @ManyToMany(mappedBy = "role")
+    @ManyToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
     Set<User> users;
 }

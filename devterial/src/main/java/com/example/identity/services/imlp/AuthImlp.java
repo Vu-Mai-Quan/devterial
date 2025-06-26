@@ -20,6 +20,8 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.ILoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@Slf4j
 public class AuthImlp implements AuthService {
 
     JpaRepositoriyUser repo;
@@ -46,6 +49,7 @@ public class AuthImlp implements AuthService {
         if (user.isPresent() && endCode.matches(rq.getPassword(), user.get().getPassword())) {
             Set<Permission> per = getAllPermissionByIdRole(user.get().getRole());
             String token = jwtService.getLastRefreshTokenFromDataBase(user.get().getId());
+            log.debug("Token moi nhat: {}", token);
             return LoginResponse.builder()
                     .token(jwtService.createToken(mapper.userAuthorRqToUser(user.get(), per)))
                     .user(new UserResponse(

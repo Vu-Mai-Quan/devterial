@@ -4,7 +4,9 @@ import com.example.identity.dto.request.UserRequest;
 import com.example.identity.dto.response.GlobalResponse;
 import com.example.identity.dto.response.UserResponse;
 import com.example.identity.enumvalue.StatusMessageEnum;
+import com.example.identity.exeptionsglobal.ErrorModel;
 import com.example.identity.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.RequestContext;
 
 import javax.naming.AuthenticationException;
 import java.util.UUID;
@@ -34,10 +37,10 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size) {
+    public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size, HttpServletRequest rq) {
         Page<UserResponse> lsUser = service.getAll(Pageable.ofSize(size).withPage(page));
         if(lsUser.isEmpty()){
-            return ResponseEntity.badRequest().body(new GlobalResponse<>(StatusMessageEnum.SUCCESS, StatusMessageEnum.SUCCESS.getMessage(), "Danh sách trống"));
+            return ResponseEntity.badRequest().body(new ErrorModel(StatusMessageEnum.NOT_FOUND,"Không có bản ghi", rq.getRequestURI()));
         }
         return ResponseEntity.ok(new GlobalResponse<>(StatusMessageEnum.SUCCESS, StatusMessageEnum.SUCCESS.getMessage(), lsUser));
     }

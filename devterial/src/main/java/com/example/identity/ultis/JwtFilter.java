@@ -1,6 +1,9 @@
 package com.example.identity.ultis;
 
+import com.example.identity.enumvalue.StatusMessageEnum;
+import com.example.identity.exeptionsglobal.ErrorModel;
 import com.example.identity.model.User;
+import com.example.identity.repositories.JpaRepositoriyUser;
 import com.example.identity.services.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.internal.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,10 +31,9 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -41,12 +44,13 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
     private static final int BEARER_LENGTH = 7;
 
-    UserDetailsService userDetailsService;
+
     JwtService jwtService;
     ObjectMapper mapper;
+    private final JpaRepositoriyUser jpaRepositoriyUser;
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         try {
@@ -58,6 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
             String jwt = header.substring(BEARER_LENGTH);
+
             if (!isValidToken(jwt)) {
                 sendErrorResponse(response, request, "Token không hợp lệ hoặc đã bị hủy"
                 );
@@ -66,10 +71,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
             authenticateUser(jwt, request);
             filterChain.doFilter(request, response);
-        }catch (ExpiredJwtException | MalformedJwtException |
-                UnsupportedJwtException |
-                IllegalArgumentException ex) {
-            sendErrorResponse(response,request, String.format("Token không hợp lệ hoặc đã hết hạn: %s",ex.getMessage()));
+        } catch (ExpiredJwtException | MalformedJwtException |
+                 UnsupportedJwtException |
+                 IllegalArgumentException ex) {
+            sendErrorResponse(response, request, String.format("Token không hợp lệ hoặc đã hết hạn: %s", ex.getMessage()));
         }
     }
 
@@ -83,14 +88,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private void authenticateUser(String jwt, HttpServletRequest request) {
         String username = jwtService.extractUserName(jwt);
+        var roleSet = Arrays.stream(jwtService.extracRolesFromToken(jwt)).map(item -> new SimpleGrantedAuthority(String.format("ROLE_%s", item))).toList();
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User userDetails = (User) userDetailsService.loadUserByUsername(username);
             // Lấy thông tin user và roles từ DB, không cần đọc roles từ JWT
-            if (jwtService.validateToken(jwt, userDetails)) {
+            if (jpaRepositoriyUser.existsByUsername(username)&&jwtService.validateToken(jwt, username)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()); // Sử dụng roles từ DB
+                        username, null, roleSet); // Sử dụng roles từ DB
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication); 
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
             }
         }
     }
@@ -99,25 +105,21 @@ public class JwtFilter extends OncePerRequestFilter {
         rp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         rp.setContentType(MediaType.APPLICATION_JSON_VALUE);
         rp.setCharacterEncoding("UTF-8");
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", new Date(System.currentTimeMillis()));
-        response.put("code", HttpServletResponse.SC_UNAUTHORIZED);
-        response.put("message", message);
-        response.put("error", "Xác thực không thành công");
-        response.put("path", rq.getRequestURI());
-
+        ErrorModel response = new ErrorModel();
+        response.setErrorAt(rq.getRequestURI());
+        response.setErrorCode(StatusMessageEnum.UNAUTHORIZED);
+        response.setErrorMessage(message);
         rp.getWriter().write(mapper.writeValueAsString(response));
     }
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        final   Pair<String, Set<String>> byPassTokens =
-                Pair.of("**/public/**", Set.of("GET","POST","PUT","DELETE"));
+        final Pair<String, Set<String>> byPassTokens =
+                Pair.of("**/public/**", Set.of("GET", "POST", "PUT", "DELETE"));
         AntPathMatcher matcher = new AntPathMatcher();
         String servletPath = request.getRequestURL().toString();
         String method = request.getMethod();
-        return matcher.match(byPassTokens.getLeft(), servletPath)&&
+        return matcher.match(byPassTokens.getLeft(), servletPath) &&
                 byPassTokens.getRight().stream().anyMatch(m -> m.equalsIgnoreCase(method));
     }
 }

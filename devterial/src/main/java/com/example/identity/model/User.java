@@ -3,6 +3,8 @@ package com.example.identity.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +26,10 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity implements UserDetails {
 
-    @Id
+    /**
+	 * 
+	 */
+	@Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
     @Column(unique = true, length = 32)
@@ -37,11 +42,12 @@ public class User extends BaseEntity implements UserDetails {
     String lastName;
 
     LocalDate dob;
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_with_role",
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "role_name")
     )
+    @Fetch(FetchMode.SUBSELECT)
     Set<Role> role;
 
     @Override

@@ -5,6 +5,7 @@ import com.example.identity.dto.response.GlobalResponse;
 import com.example.identity.dto.response.LoginResponse;
 import com.example.identity.enumvalue.RoleEnum;
 import com.example.identity.enumvalue.StatusMessageEnum;
+import com.example.identity.exeptionsglobal.ErrorModel;
 import com.example.identity.services.AuthService;
 import com.example.identity.services.BlackListTokenService;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,6 +13,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
@@ -47,23 +49,23 @@ public class AuthController {
     }
 
     @PostMapping("public/blacklisted-token")
-    public ResponseEntity<GlobalResponse<?>> addBlackListToken(@RequestBody @Validated BlackListTokenRq rq) {
+    public ResponseEntity<?> addBlackListToken(@RequestBody @Validated BlackListTokenRq rq,final HttpServletRequest hsrq) {
         try {
             var res = blackListTokenService.createBlackListToken(rq.token);
             return ResponseEntity.badRequest().body(new GlobalResponse<>(StatusMessageEnum.SUCCESS, StatusMessageEnum.SUCCESS.getMessage(), res));
         } catch (EntityExistsException | NoResultException | JwtException e) {
-            return ResponseEntity.badRequest().body(new GlobalResponse<>(StatusMessageEnum.BAD_REQUEST, e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ErrorModel(StatusMessageEnum.BAD_REQUEST, e.getMessage(), hsrq.getRequestURI()));
         }
 
     }
 
     @PostMapping("public/logout")
-    public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String rq) {
+    public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String rq, final HttpServletRequest hsrq) {
         try {
             var res = blackListTokenService.createBlackListToken(rq.substring(7));
             return ResponseEntity.badRequest().body(new GlobalResponse<>(StatusMessageEnum.SUCCESS, "Success", res));
         } catch (EntityExistsException | NoResultException e) {
-            return ResponseEntity.badRequest().body(new GlobalResponse<>(StatusMessageEnum.BAD_REQUEST, e.getMessage(), null));
+            return ResponseEntity.badRequest().body(new ErrorModel(StatusMessageEnum.BAD_REQUEST, e.getMessage(), hsrq.getRequestURI()));
         }
     }
 

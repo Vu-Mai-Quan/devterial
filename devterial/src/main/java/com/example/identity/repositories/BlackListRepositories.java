@@ -11,4 +11,5 @@ public interface BlackListRepositories extends JpaRepository<BlackListToken, Str
 	Optional<BlackListToken> findByToken(String token);
 	Optional<BlackListToken> findByUserId(UUID userId);
 	Optional<BlackListToken> findByUserIdAndToken(UUID userId, String token);
+
 }

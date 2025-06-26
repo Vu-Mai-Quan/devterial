@@ -16,4 +16,8 @@
       <module name="devterial" options="-parameters" />
     </option>
   </component>
+  <component name="TypeScriptCompiler">
+    <option name="typeScriptServiceDirectory" value="D:/Angular-v17/myapp/node_modules/typescript" />
+    <option name="versionType" value="SERVICE_DIRECTORY" />
+  </component>
 </project>

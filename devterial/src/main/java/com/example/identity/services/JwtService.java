@@ -5,6 +5,7 @@ import com.example.identity.model.User;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Set;
 import java.util.UUID;
 
 public interface JwtService {
@@ -20,10 +21,11 @@ public interface JwtService {
 
     boolean isBlackList(String jwt);
 
-    boolean validateToken(String token, UserDetails userDetails);
+    boolean validateToken(String token, String userDetails);
 
     boolean isTokenExpired(String token);
-
-
+    
     String getLastRefreshTokenFromDataBase(UUID id);
+
+   String[] extracRolesFromToken(String token);
 }

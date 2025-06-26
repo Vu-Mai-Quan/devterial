@@ -35,7 +35,6 @@ public class ApplicationInit {
 
     public ApplicationInit(@Value("${admin.name}") String aDMIN_NAME, @Value("${admin.password}") String pASSWORD,
                            JpaRepositoriyUser jpaRepositoriyUser, RoleRepositories roleRepositories, PermissionRepository permissionRepository) {
-        super();
         ADMIN_NAME = aDMIN_NAME;
         PASSWORD = pASSWORD;
         this.jpaRepositoriyUser = jpaRepositoriyUser;

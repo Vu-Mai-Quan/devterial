@@ -14,14 +14,15 @@ import java.util.UUID;
 
 
 public interface JpaRepositoriyUser extends JpaRepository<User, UUID>{
-	@EntityGraph(attributePaths = {"role"})
+
 	@Override
 	@NonNull
 	Page<User> findAll(@NonNull  Pageable pageable);
 
-	@Query("SELECT u From User WHERE u.userName = :username")
+	@Query("SELECT U From User U WHERE U.username = :username")
 	@EntityGraph(attributePaths = {"role"})
 	Optional<User> findByUsername(@Param("username") String username);
-	
+
+	boolean existsByUsername(@NonNull String username);
 
 }

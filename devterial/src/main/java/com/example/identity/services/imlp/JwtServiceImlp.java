@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -33,13 +34,13 @@ import java.util.function.Function;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @Service
-
 public class JwtServiceImlp implements JwtService {
 
     @NonFinal
     JwtConfig jwtConfig;
     @NonFinal
     Key key;
+    ModelMapper mapper;
     BlackListRepositories blackListRepositories;
     RefreshTokenRepo refreshTokenRepo;
 
@@ -79,9 +80,9 @@ public class JwtServiceImlp implements JwtService {
 
     //Token hợp lệ hay không
     @Override
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, String userDetails) {
         String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername()) && isTokenExpired(token));
+        return (userName.equals(userDetails) && isTokenExpired(token));
     }
 
     @Override
@@ -125,10 +126,22 @@ public class JwtServiceImlp implements JwtService {
         return re;
     }
 
-
+/** lấy ra token còn hạn gần nhất tránh tình trạng spam token*/
     @Override
     public String getLastRefreshTokenFromDataBase(UUID userId) {
         var token = refreshTokenRepo.findFirstByUserIdOrderByExpiredDateDesc(userId);
         return token.filter(this::isTokenExpired).orElse(null);
+    }
+/** Lấy ra roles nằm trong token
+ * Trả ra lỗi nếu không có claim role trong token, hoặc token hết hạn sẽ ném lỗi luôn,
+ * bỏ qua có role trong token hay không
+ * */
+    @Override
+    public String[] extracRolesFromToken(String token) {
+        try {
+            return mapper.map(decodeToken(token).get("role", List.class),String[].class);
+        } catch (JwtException e) {
+            throw new JwtException("Không tìm thấy props role trong token", e);
+        }
     }
 }

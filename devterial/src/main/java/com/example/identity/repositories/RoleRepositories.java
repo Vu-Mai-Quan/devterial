@@ -27,7 +27,7 @@ public interface RoleRepositories extends JpaRepository<Role, String> {
     @NonNull
     Optional<Role> findById(@NonNull String s);
 
-    @Query("SELECT r FROM Role r WHERE r.name IN :id")
+    @Query(name="Role.selectIn")
     Set<Role> findAllById(@PathParam("id") Set<String> id);
 
     @EntityGraph(attributePaths = {"permissions"})
