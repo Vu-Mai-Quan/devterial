@@ -65,6 +65,6 @@ local.properties
 /target/classes/META-INF/maven/com.example/devterial/pom.properties
 /target/classes/META-INF/maven/com.example/devterial/pom.xml
 /.classpath
-/target/
-/src/main/resources/database/
-/.idea/
+/target/*
+/src/main/resources/database/*
+/.idea/*

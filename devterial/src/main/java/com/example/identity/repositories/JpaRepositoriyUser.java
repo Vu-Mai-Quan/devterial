@@ -17,6 +17,7 @@ public interface JpaRepositoriyUser extends JpaRepository<User, UUID>{
 
 	@Override
 	@NonNull
+	@EntityGraph(attributePaths = {"role"})
 	Page<User> findAll(@NonNull  Pageable pageable);
 
 	@Query("SELECT U From User U WHERE U.username = :username")
