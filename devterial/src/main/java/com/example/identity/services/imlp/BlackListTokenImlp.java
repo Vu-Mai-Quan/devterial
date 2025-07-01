@@ -55,7 +55,7 @@ public class BlackListTokenImlp implements BlackListTokenService {
     }
 
     @Transactional
-    private void saveBlackListToken(String token) {
+    protected void saveBlackListToken(String token) {
 
         Claims clams = jwtService.decodeToken(token);
         var idUser = UUID.fromString(clams.get("id", String.class));

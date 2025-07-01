@@ -1,8 +1,12 @@
 package com.example.identity.exeptionsglobal;
 
 import com.example.identity.enumvalue.StatusMessageEnum;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.sql.Date;
@@ -11,7 +15,7 @@ import java.sql.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-
+@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class ErrorModel {
     @JsonProperty(value = "error_code")
     StatusMessageEnum errorCode;

@@ -30,5 +30,11 @@ public class UserRequest {
 	@JsonProperty(value = "date_of_birth")
 	LocalDate dob;
 
+	public UserRequest(String password, String fistName, String lastName, LocalDate dob) {
+		this.password = password;
+		this.fistName = fistName;
+		this.lastName = lastName;
+		this.dob = dob;
+	}
 }
 

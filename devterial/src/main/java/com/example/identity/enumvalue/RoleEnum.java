@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 public enum RoleEnum {
     ADMIN("ADMIN"), CLIENT("Khách hàng"), CUSTOMER("Nhân viên"), USER("Người dùng"), MANAGER("Người quản lí");
-
     final String message;
 
 

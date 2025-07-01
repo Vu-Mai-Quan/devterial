@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-@Component()
+@Component("userMapper")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserMapper {

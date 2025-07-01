@@ -65,7 +65,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
                 return;
             }
-
             authenticateUser(jwt, request);
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException | MalformedJwtException |
@@ -88,7 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
         var roleSet = Arrays.stream(jwtService.extracRolesFromToken(jwt)).map(item -> new SimpleGrantedAuthority(String.format("ROLE_%s", item))).toList();
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // Lấy thông tin user và roles từ DB, không cần đọc roles từ JWT
-            if (jpaRepositoriyUser.existsByUsername(username)&&jwtService.validateToken(jwt, username)) {
+            if (jpaRepositoriyUser.existsByUsername(username) && jwtService.validateToken(jwt, username)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         username, null, roleSet); // Sử dụng roles từ DB
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -111,6 +110,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+
         final Pair<String, Set<String>> byPassTokens =
                 Pair.of("**/public/**", Set.of("GET", "POST", "PUT", "DELETE"));
         AntPathMatcher matcher = new AntPathMatcher();
