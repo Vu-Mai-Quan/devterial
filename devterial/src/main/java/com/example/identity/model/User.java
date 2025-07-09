@@ -16,7 +16,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "user", indexes = {@Index(columnList = "username", name = "idx_username")})
+@Table(name = "user", indexes = {
+    @Index(columnList = "username", name = "idx_username")})
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(name = "User.roles", attributeNodes = @NamedAttributeNode("role"))
@@ -24,12 +25,15 @@ import java.util.stream.Collectors;
 @Setter
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@NamedQueries({
+@NamedQuery(name = "User.SelectFecthRole", query = "SELECT u from User u JOIN FETCH u.role u ")
+})
 public class User extends BaseEntity implements UserDetails {
 
     /**
-	 * 
-	 */
-	@Id
+     *
+     */
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
     @Column(unique = true, length = 32)
