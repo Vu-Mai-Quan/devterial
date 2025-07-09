@@ -27,9 +27,7 @@ import java.util.UUID;
 public class UserController {
     UserService service;
 
-    /**
-     * đăng kí user
-     */
+  
     @PostMapping("public/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest rq) {
         return ResponseEntity.ok(service.save(rq));

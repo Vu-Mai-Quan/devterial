@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ *
+ * @author ADMIN
+ */
 @Getter
 @AllArgsConstructor
 public enum StatusMessageEnum {

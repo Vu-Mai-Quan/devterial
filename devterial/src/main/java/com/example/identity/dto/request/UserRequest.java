@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @Setter
 public class UserRequest {
 
-
 	@Email(message = "Vui lòng nhập đúng định dạng email")
 	String username;
 	@Size(min = 6, max = 10,message = "Mật khẩu từ 6-10 kí tự")

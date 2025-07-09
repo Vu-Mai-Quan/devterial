@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,7 +33,7 @@ public class ApplicationInit {
     private final PermissionRepository permissionRepository;
 
     public ApplicationInit(@Value("${admin.name}") String aDMIN_NAME, @Value("${admin.password}") String pASSWORD,
-                           JpaRepositoriyUser jpaRepositoriyUser, RoleRepositories roleRepositories, PermissionRepository permissionRepository) {
+            JpaRepositoriyUser jpaRepositoriyUser, RoleRepositories roleRepositories, PermissionRepository permissionRepository) {
         ADMIN_NAME = aDMIN_NAME;
         PASSWORD = pASSWORD;
         this.jpaRepositoriyUser = jpaRepositoriyUser;
@@ -95,9 +94,9 @@ public class ApplicationInit {
         return roleNames.stream()
                 .filter(name -> !existingRoles.containsKey(name))
                 .map(name -> Role.builder()
-                        .name(name)
-                        .descriptions(RoleEnum.valueOf(name).getMessage())
-                        .build())
+                .name(name)
+                .descriptions(RoleEnum.valueOf(name).getMessage())
+                .build())
                 .collect(Collectors.toSet());
     }
 
@@ -112,9 +111,9 @@ public class ApplicationInit {
         return permissionNames.stream()
                 .filter(name -> !existingPermissions.containsKey(name))
                 .map(name -> Permission.builder()
-                        .name(name)
-                        .descriptions(PermissionEnum.valueOf(name).getDescriptions())
-                        .build())
+                .name(name)
+                .descriptions(PermissionEnum.valueOf(name).getDescriptions())
+                .build())
                 .collect(Collectors.toSet());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.identity.repositories;
 
+import com.example.identity.dto.response.UserResponse;
 import com.example.identity.model.User;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
@@ -17,9 +18,12 @@ public interface JpaRepositoriyUser extends JpaRepository<User, UUID>{
 
 	@Override
 	@NonNull
-	@EntityGraph(attributePaths = {"role"})
 	Page<User> findAll(@NonNull  Pageable pageable);
-
+        
+        
+        @Query("SELECT new com.example.identity.dto.response.UserResponse(u.id, u.username, u.fistName, u.lastName, u.dob, null) FROM User u")
+        Page<UserResponse> findAllWithRole(@NonNull Pageable pagenable);
+        
 	@Query("SELECT U From User U WHERE U.username = :username")
 	@EntityGraph(attributePaths = {"role"})
 	Optional<User> findByUsername(@Param("username") String username);

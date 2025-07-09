@@ -3,25 +3,18 @@ package com.example.identity.services.imlp;
 import com.example.identity.dto.request.UserRequest;
 import com.example.identity.dto.response.UserResponse;
 import com.example.identity.enumvalue.RoleEnum;
-import com.example.identity.mapper.RoleMapper;
 import com.example.identity.mapper.UserMapper;
 import com.example.identity.model.Role;
 import com.example.identity.model.User;
 import com.example.identity.repositories.JpaRepositoriyUser;
 import com.example.identity.services.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -64,7 +57,7 @@ public class UserImlp implements UserService {
 
     @Override
     public Page<UserResponse> getAll(Pageable pageable) {
-        return repo.findAll(pageable).map(uMap::userToUserResponse);
+        return repo.findAllWithRole(pageable);
     }
 
     @Override
